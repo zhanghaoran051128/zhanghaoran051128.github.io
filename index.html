@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aria — AI Customer Support, On Autopilot</title>
+<style>
+  :root{
+    --indigo:#6366f1; --cyan:#22d3ee; --ink:#0b1020; --muted:#5b6480;
+    --bg:#f7f8fc; --card:#fff; --line:#e7eaf5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Segoe UI',Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  a{text-decoration:none;color:inherit}
+  .btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:700;font-size:15px;transition:.2s}
+  .btn-primary{background:linear-gradient(90deg,var(--indigo),#8b5cf6);color:#fff;box-shadow:0 10px 24px rgba(99,102,241,.35)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(99,102,241,.4)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--indigo);color:var(--indigo)}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:50;background:rgba(247,248,252,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+  .logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--indigo),var(--cyan));display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px}
+  .nav-links{display:flex;gap:30px;font-size:15px;font-weight:600;color:var(--muted)}
+  .nav-links a:hover{color:var(--indigo)}
+
+  /* HERO */
+  .hero{padding:90px 0 70px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;width:640px;height:640px;border-radius:50%;
+    background:radial-gradient(circle,rgba(99,102,241,.16),transparent 65%);top:-280px;right:-120px;z-index:0}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;position:relative;z-index:1}
+  .eyebrow{display:inline-block;padding:7px 15px;border-radius:999px;background:#eef0ff;color:var(--indigo);
+    font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:22px}
+  h1{font-size:52px;line-height:1.12;letter-spacing:-1.2px;font-weight:800}
+  h1 .grad{background:linear-gradient(90deg,var(--indigo),#06b6d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{margin:20px 0 32px;font-size:19px;color:var(--muted);max-width:520px}
+  .hero-cta{display:flex;gap:14px;align-items:center}
+  .trust{margin-top:26px;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px}
+  .avatars{display:flex}
+  .avatars span{width:30px;height:30px;border-radius:50%;border:2px solid #fff;margin-left:-8px;font-size:12px;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700}
+  .avatars span:nth-child(1){background:#6366f1;margin-left:0}
+  .avatars span:nth-child(2){background:#06b6d4}
+  .avatars span:nth-child(3){background:#f59e0b}
+  .avatars span:nth-child(4){background:#ec4899}
+
+  /* CHAT MOCKUP */
+  .phone{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 40px 90px rgba(30,41,99,.18);padding:18px}
+  .chat-head{display:flex;align-items:center;gap:12px;padding:8px 6px 16px;border-bottom:1px solid var(--line)}
+  .chat-head .bot{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--cyan));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px}
+  .chat-head b{display:block;font-size:15px}
+  .chat-head small{color:#10b981;font-weight:700;font-size:12px}
+  .bubbles{padding:18px 4px;display:flex;flex-direction:column;gap:12px}
+  .b{max-width:82%;padding:12px 15px;border-radius:14px;font-size:14px}
+  .b.bot{background:#f1f3fb;color:#39406;border-bottom-left-radius:4px}
+  .b.me{align-self:flex-end;background:linear-gradient(90deg,var(--indigo),#8b5cf6);color:#fff;border-bottom-right-radius:4px}
+  .typing{display:flex;gap:4px;padding:14px 15px;background:#f1f3fb;border-radius:14px;border-bottom-left-radius:4px;width:fit-content}
+  .typing i{width:7px;height:7px;border-radius:50%;background:#9aa3c7;animation:blink 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+  /* LOGOS */
+  .logos{padding:26px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .logos .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;
+    color:#9aa3c0;font-weight:800;font-size:17px;letter-spacing:1px}
+
+  /* SECTION COMMON */
+  section{padding:84px 0}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 52px}
+  .sec-head h2{font-size:38px;font-weight:800;letter-spacing:-.8px;margin-bottom:14px}
+  .sec-head p{color:var(--muted);font-size:17px}
+
+  /* FEATURES */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px;transition:.25s}
+  .card:hover{transform:translateY(-5px);box-shadow:0 24px 50px rgba(30,41,99,.1);border-color:#d6dbf5}
+  .ico{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:23px;margin-bottom:18px}
+  .ico.i1{background:#eef0ff}.ico.i2{background:#e0fbff}.ico.i3{background:#e7fbf2}
+  .ico.i4{background:#fef3e8}.ico.i5{background:#fdeef6}.ico.i6{background:#f1eefc}
+  .card h3{font-size:19px;margin-bottom:9px}
+  .card p{color:var(--muted);font-size:15px}
+
+  /* STEPS */
+  .steps{background:#0b1020;color:#fff}
+  .steps .sec-head h2{color:#fff}.steps .sec-head p{color:#aab4d4}
+  .step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .step{background:#131a30;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:32px}
+  .step .num{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--cyan));
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;margin-bottom:18px}
+  .step h3{font-size:19px;margin-bottom:9px}
+  .step p{color:#aab4d4;font-size:15px}
+
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
+  .price{background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px 30px;display:flex;flex-direction:column}
+  .price.featured{border:2px solid var(--indigo);position:relative;box-shadow:0 24px 60px rgba(99,102,241,.18)}
+  .tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--indigo),#8b5cf6);
+    color:#fff;font-size:12px;font-weight:800;padding:6px 16px;border-radius:999px;letter-spacing:.5px}
+  .price h3{font-size:18px;color:var(--muted);font-weight:700}
+  .amount{font-size:44px;font-weight:800;margin:10px 0 4px;letter-spacing:-1px}
+  .amount small{font-size:15px;color:var(--muted);font-weight:600}
+  .price ul{list-style:none;margin:22px 0 28px;display:flex;flex-direction:column;gap:12px;font-size:15px}
+  .price li::before{content:"✓";color:#10b981;font-weight:800;margin-right:10px}
+  .price .btn{margin-top:auto;text-align:center}
+
+  /* CTA */
+  .cta-box{background:linear-gradient(120deg,#6366f1,#8b5cf6 55%,#06b6d4);border-radius:26px;padding:64px 40px;text-align:center;color:#fff}
+  .cta-box h2{font-size:36px;font-weight:800;letter-spacing:-.8px;margin-bottom:14px}
+  .cta-box p{opacity:.9;font-size:17px;margin-bottom:30px}
+  .cta-box .btn{background:#fff;color:var(--indigo);padding:15px 34px;font-size:16px}
+
+  /* FOOTER */
+  footer{background:#0b1020;color:#aab4d4;padding:46px 0;font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+  footer .flinks{display:flex;gap:24px}
+  footer .flinks a:hover{color:#fff}
+
+  @media(max-width:900px){
+    .nav-links{display:none}
+    .hero-grid{grid-template-columns:1fr;gap:40px}
+    h1{font-size:38px}
+    .grid3,.step-grid,.price-grid{grid-template-columns:1fr}
+    .sec-head h2,.cta-box h2{font-size:28px}
+    section{padding:60px 0}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav">
+    <div class="logo"><span class="logo-mark">◆</span> Aria</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <a href="#pricing" class="btn btn-primary">Start free trial</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">🤖 AI CUSTOMER SUPPORT</span>
+      <h1>Support that never sleeps,<br><span class="grad">powered by your data</span></h1>
+      <p class="lead">Aria answers customer questions instantly, 24/7 — trained on your website, docs and policies. Set it up in 10 minutes, no coding required.</p>
+      <div class="hero-cta">
+        <a href="#pricing" class="btn btn-primary">Try Aria free</a>
+        <a href="#how" class="btn btn-ghost">▶ Watch demo</a>
+      </div>
+      <div class="trust">
+        <div class="avatars"><span>JM</span><span>AK</span><span>SL</span><span>TR</span></div>
+        <span><b style="color:var(--ink)">4,000+ businesses</b> answer 72% of tickets automatically</span>
+      </div>
+    </div>
+    <div class="phone">
+      <div class="chat-head">
+        <div class="bot">◆</div>
+        <div><b>Aria Support</b><small>● Online now</small></div>
+      </div>
+      <div class="bubbles">
+        <div class="b me">Do you ship internationally?</div>
+        <div class="b bot">Yes! We ship to 40+ countries. Standard delivery takes 5–8 business days, and express takes 2–3 days. 🌍</div>
+        <div class="b me">What's your return policy?</div>
+        <div class="b bot">You can return any item within 30 days, free of charge. Would you like me to start a return for you?</div>
+        <div class="typing"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="logos">
+  <div class="wrap">
+    <span>NORTHWIND</span><span>LUMIO</span><span>Vertex</span><span>QUANTA</span><span>BrightCo</span><span>helix</span>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Everything you need to scale support</h2>
+      <p>One assistant that handles chats, tickets and FAQs — across every channel your customers use.</p>
+    </div>
+    <div class="grid3">
+      <div class="card"><div class="ico i1">⚡</div><h3>Instant responses</h3><p>Replies in under 2 seconds, even during peak traffic or the middle of the night.</p></div>
+      <div class="card"><div class="ico i2">🧠</div><h3>Trained on your content</h3><p>Point Aria at your help center or website and it learns your products, policies and tone.</p></div>
+      <div class="card"><div class="ico i3">🔗</div><h3>Live handoff</h3><p>Complex questions route to your team with the full conversation attached.</p></div>
+      <div class="card"><div class="ico i4">🌐</div><h3>95 languages</h3><p>Chat with every customer in their native language, automatically detected.</p></div>
+      <div class="card"><div class="ico i5">📊</div><h3>Insight dashboard</h3><p>See what customers ask most and spot product issues before they spread.</p></div>
+      <div class="card"><div class="ico i6">🧩</div><h3>Easy integration</h3><p>Works with Shopify, Slack, Zendesk and email — one snippet for your website.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="steps">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Live in three simple steps</h2>
+      <p>Most teams finish setup in a single coffee break.</p>
+    </div>
+    <div class="step-grid">
+      <div class="step"><div class="num">1</div><h3>Connect your sources</h3><p>Add your website URL, help docs or PDFs. Aria reads them in minutes.</p></div>
+      <div class="step"><div class="num">2</div><h3>Customize the style</h3><p>Match your brand colors, welcome message and response tone — no code needed.</p></div>
+      <div class="step"><div class="num">3</div><h3>Go live</h3><p>Copy one line of code into your site, or enable the Shopify/Slack plugin.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Simple, honest pricing</h2>
+      <p>Start free for 14 days. No credit card required, cancel anytime.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price">
+        <h3>Starter</h3>
+        <div class="amount">$0<small>/month</small></div>
+        <ul><li>100 conversations / mo</li><li>1 knowledge source</li><li>Website widget</li><li>Email support</li></ul>
+        <a href="#" class="btn btn-ghost">Get started</a>
+      </div>
+      <div class="price featured">
+        <span class="tag">MOST POPULAR</span>
+        <h3>Growth</h3>
+        <div class="amount">$49<small>/month</small></div>
+        <ul><li>5,000 conversations / mo</li><li>Unlimited sources</li><li>95 languages</li><li>Live agent handoff</li><li>Analytics dashboard</li></ul>
+        <a href="#" class="btn btn-primary">Start free trial</a>
+      </div>
+      <div class="price">
+        <h3>Business</h3>
+        <div class="amount">$149<small>/month</small></div>
+        <ul><li>Unlimited conversations</li><li>Custom AI model training</li><li>Slack &amp; Zendesk sync</li><li>Dedicated success manager</li></ul>
+        <a href="#" class="btn btn-ghost">Contact sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="cta-box">
+      <h2>Ready to reclaim your inbox?</h2>
+      <p>Join 4,000+ teams letting Aria handle the busywork — while they focus on growth.</p>
+      <a href="#pricing" class="btn">Start your 14-day free trial →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo" style="color:#fff"><span class="logo-mark">◆</span> Aria</div>
+    <div class="flinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+    <div>© 2026 Aria Inc. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>
